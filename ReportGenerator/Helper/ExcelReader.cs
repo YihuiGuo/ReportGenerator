@@ -17,11 +17,6 @@ namespace ReportGenerator.Helper
         private string connString;
         private FileType fileType = FileType.noset;
 
-        public ExcelReader()
-        {
-
-        }
-
         private void SetFileInfo(string path)
         {
             filePath = path;
