@@ -22,14 +22,14 @@ namespace ReportGenerator.Manager
         public ReportManager(IConfigurationProvider provider)
         {
             configurationProvider = provider;
-            rawData = new ExcelReader().ReadFile(provider.GetConfigurationValue("RawDataPath"));
+            rawData = new ExcelReader().ReadFile(configurationProvider.GetConfigurationValue("RawDataPath"));
             sortedData = new Collection<Dictionary<string, string>>();
 
             int ColumnIndexOfC0, ColumnIndexOfC2;
-            int.TryParse(provider.GetConfigurationValue("C0InRawData"),out ColumnIndexOfC0);
-            int.TryParse(provider.GetConfigurationValue("C2InRawData"), out ColumnIndexOfC2);
-            var C0ExpectValue = provider.GetConfigurationValue("C0FilterValue");
-            var C2ExpectValue = provider.GetConfigurationValue("C2FilterValue");
+            int.TryParse(configurationProvider.GetConfigurationValue("C0InRawData"),out ColumnIndexOfC0);
+            int.TryParse(configurationProvider.GetConfigurationValue("C2InRawData"), out ColumnIndexOfC2);
+            var C0ExpectValue = configurationProvider.GetConfigurationValue("C0FilterValue");
+            var C2ExpectValue = configurationProvider.GetConfigurationValue("C2FilterValue");
 
             var targetrows = rawData.Select($"{rawData.GetExcelHeader(ColumnIndexOfC0)} ='{C0ExpectValue}' and {rawData.GetExcelHeader(ColumnIndexOfC2)} = '{C2ExpectValue}'");
             foreach (var row in targetrows)
@@ -47,7 +47,7 @@ namespace ReportGenerator.Manager
         public void LoadTargetSheet()
         {
             xlapp = new Application();
-            Workbook targetworkbook = xlapp.Workbooks.Open(AppDomain.CurrentDomain.BaseDirectory + @"Project Desktop Automation Status.xlsx");
+            Workbook targetworkbook = xlapp.Workbooks.Open(configurationProvider.GetConfigurationValue("TargetDataPath"));
             var targetsheet = targetworkbook.Sheets[1];
 
             xlapp.Visible = true;
@@ -96,7 +96,6 @@ namespace ReportGenerator.Manager
             targetsheet.Cells[5, 5] = totalCount;
             targetsheet.Cells[5, 8] = targetsheet.Cells[2, 7];
 
-            targetworkbook.Close(true);
             xlapp.Quit();
         }
     }
